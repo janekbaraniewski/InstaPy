@@ -368,7 +368,7 @@ class InstaPy:
 
         return self
 
-      
+
 
     def set_selenium_remote_session(self, selenium_url='', selenium_driver=None):
         """
@@ -1545,7 +1545,8 @@ class InstaPy:
                      use_smart_hashtags=False,
                      interact=False,
                      randomize=False,
-                     media=None):
+                     media=None,
+                     callback=None):
         """Likes (default) 50 images per given tag"""
         if self.aborting:
             return self
@@ -1730,6 +1731,17 @@ class InstaPy:
                 except NoSuchElementException as err:
                     self.logger.error('Invalid Page: {}'.format(err))
 
+            if callback:
+                callback({
+                    'tag': tag,
+                    'liked': liked_img,
+                    'already_liked': already_liked,
+                    'inap_img': inap_img,
+                    'commented': commented,
+                    'followed': followed,
+                    'not_valid_users': not_valid_users,
+                })
+
         self.logger.info('Tag: {}'.format(tag.encode('utf-8')))
         self.logger.info('Liked: {}'.format(liked_img))
         self.logger.info('Already Liked: {}'.format(already_liked))
@@ -1746,8 +1758,6 @@ class InstaPy:
         self.not_valid_users += not_valid_users
 
         return self
-
-
 
     def like_by_users(self, usernames, amount=10, randomize=False, media=None):
         """Likes some amounts of images for each usernames"""
@@ -1885,7 +1895,7 @@ class InstaPy:
                                     user_name not in self.dont_include and
                                     checked_img and
                                     commenting):
-                                    
+
                                 if self.delimit_commenting:
                                     (self.commenting_approved,
                                      disapproval_reason) = verify_commenting(
